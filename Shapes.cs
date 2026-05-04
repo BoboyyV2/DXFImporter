@@ -25,6 +25,9 @@ namespace DXFImporter
 		public int rotation;
 		public bool highlighted;
 
+		public static PointF OriginOffset = new PointF();
+		public static PointF PartOffset = new PointF();
+
 		public abstract Color AccessContourColor
 		{
 			get;
@@ -63,9 +66,11 @@ namespace DXFImporter
 
 		public Line (Point start, Point end, Color color, int w)
 		{
-			startPoint = start;
-			endPoint = end;
-			contourColor = color;
+			startPoint = new Point(start.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
+								   start.Y + (int)Math.Round(OriginOffset.Y - PartOffset.Y) );
+			endPoint = new Point(end.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
+                                   end.Y + (int)Math.Round(OriginOffset.Y - PartOffset.Y));
+            contourColor = color;
 			lineWidth = w;
 			shapeIdentifier = 1;
 			rotation= 0;

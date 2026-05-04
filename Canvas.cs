@@ -59,6 +59,7 @@ namespace DXFImporter
 		private Rectangle highlightedRegion = new Rectangle (0,0,0,0);
 
 
+
 		private System.Windows.Forms.PictureBox pictureBox1;
 		/// <summary>
 		/// Required designer variable.
@@ -165,12 +166,17 @@ namespace DXFImporter
             dimensions = new RectangleF((float)XMin, (float)YMin, (float)(XMin - XMax), (float)(YMin - YMax));
         }
 
+		public void setup(PointF originOffset, PointF partOffset)
+		{
+			Shape.OriginOffset = originOffset;
+			Shape.PartOffset = partOffset;
+		}
 		#region Drawing and Highlighting Methods
 
 		public void Draw (Graphics g)
 		{
 			Pen lePen = new Pen(Color.White, 3);
-			
+			/*
 			g.TranslateTransform(this.pictureBox1.Location.X + 1, this.pictureBox1.Location.Y + this.pictureBox1.Size.Height - 1);
 
 			if (YMin < 0)
@@ -178,7 +184,7 @@ namespace DXFImporter
 
 			if (XMin < 0)
 				g.TranslateTransform((int) Math.Abs(XMin), 0);
-			
+			*/
 			//	g.SmoothingMode = SmoothingMode.AntiAlias; 
 
 			foreach (DrawingObject obj in objectIdentifier)						//iterates through the objects
