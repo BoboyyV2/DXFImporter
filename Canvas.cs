@@ -8,13 +8,14 @@
 */
 
 using System;
-using System.IO;
 using System.Collections;
 using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Data;
+using System.IO;
 using System.Windows.Forms;
+using static System.Windows.Forms.AxHost;
 
 
 namespace DXFImporter
@@ -64,6 +65,9 @@ namespace DXFImporter
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
+		private PointF offset = new PointF ();
+		private RectangleF dimensions = new Rectangle();
+
 		public Canvas()
 		{
 
@@ -110,14 +114,14 @@ namespace DXFImporter
 			base.Dispose(disposing);
 		}
 
+		
 
-
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
+        #region Windows Form Designer generated code
+            /// <summary>
+            /// Required method for Designer support - do not modify
+            /// the contents of this method with the code editor.
+            /// </summary>
+        private void InitializeComponent()
 		{
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.SuspendLayout();
@@ -154,6 +158,12 @@ namespace DXFImporter
 
 		}
 		#endregion
+
+		public void getLayout()
+		{
+			offset = offset = new PointF((float)XMin, (float)YMin);
+            dimensions = new RectangleF((float)XMin, (float)YMin, (float)(XMin - XMax), (float)(YMin - YMax));
+        }
 
 		#region Drawing and Highlighting Methods
 
@@ -221,7 +231,7 @@ namespace DXFImporter
 						if (mainScale == 0)
 							mainScale = 1;
 
-						temp.Draw(lePen, g, mainScale);
+						temp.Draw(lePen, g);
                         //DEBUG
                         Console.WriteLine("mainScale = " + mainScale);
                         Console.WriteLine("circle center = " + temp.AccessCenterPoint.ToString() );
@@ -259,9 +269,9 @@ namespace DXFImporter
 				}				
 			}
 
-						
-			//	g.Dispose();		//not disposed because "g" is get from the paintbackground event..
-			lePen.Dispose();
+
+            //	g.Dispose();		//not disposed because "g" is get from the paintbackground event..
+            lePen.Dispose();
 		}
 
 
@@ -410,6 +420,7 @@ namespace DXFImporter
 			mainScale = Math.Min(scaleX, scaleY);
 			*/
 			mainScale = 1;
+			Console.WriteLine("Scale recalculation succesfully dodged.");
 		}
 
 		protected override void DefWndProc(ref Message m)		//DefWndProc is overriden to capture left mouse click on the title bar of the canvas...
@@ -628,6 +639,8 @@ namespace DXFImporter
 				scaleY = 1;
 
 			mainScale = Math.Min(scaleX, scaleY);
+			//TMPFIX
+			RecalculateScale();
 
 			
 
@@ -731,12 +744,14 @@ namespace DXFImporter
 				scaleY = 1;
 
 			mainScale = Math.Min(scaleX, scaleY);
+            //TMPFIX
+            RecalculateScale();
 
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-		}
+        }
 
 
 		private void CircleModule (StreamReader reader)		//Interpretes circle objects in the DXF file
@@ -812,9 +827,11 @@ namespace DXFImporter
 				scaleY = 1;
 
 			mainScale = Math.Min(scaleX, scaleY);
+            //TMPFIX
+            RecalculateScale();
 
 
-			int ix = drawingList.Add(new circle (new Point ((int)x1, (int)-y1), radius, Color.White, Color.Red, 1));
+            int ix = drawingList.Add(new circle (new Point ((int)x1, (int)-y1), radius, Color.White, Color.Red, 1));
 			objectIdentifier.Add (new DrawingObject (4, ix));
 
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -910,9 +927,11 @@ namespace DXFImporter
 				scaleY = 1;
 
 			mainScale = Math.Min(scaleX, scaleY);
+            //TMPFIX
+            RecalculateScale();
 
 
-			int ix = drawingList.Add(new arc (new Point ((int)x1, (int)-y1), radius, angle1, angle2, Color.White, Color.Red, 1));
+            int ix = drawingList.Add(new arc (new Point ((int)x1, (int)-y1), radius, angle1, angle2, Color.White, Color.Red, 1));
 			objectIdentifier.Add (new DrawingObject (6, ix));
 
 			//////////////////////////////////////////////////////////////////////////////////////////////////////

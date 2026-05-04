@@ -708,7 +708,7 @@ namespace DXFImporter
 			g.DrawEllipse(pen, centerPoint.X - (int) radius, centerPoint.Y - (int)radius, (int)radius*2, (int)radius*2);
 		}
 
-		public void Draw (Pen pen, Graphics g, double scale)
+		/*public void Draw (Pen pen, Graphics g, double scale)
 		{
 			if (highlighted)
 			{
@@ -716,8 +716,8 @@ namespace DXFImporter
 				highlighted = false;
 			}
 
-			g.DrawEllipse(pen, (float) centerPoint.X* (float)scale - (float) radius* (float)scale, (float)centerPoint.Y * (float)scale - (float)radius* (float)scale, (float)radius*2* (float)scale, (float)radius*2* (float)scale);
-		}
+			g.DrawEllipse(pen, (float) centerPoint.X - (float) radius, (float)centerPoint.Y - (float)radius, (float)radius*2, (float)radius*2 );
+		}*/
 
 		/*		public override bool Highlight(Pen pen, Graphics g, Point point)
 				{
