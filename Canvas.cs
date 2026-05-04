@@ -26,11 +26,13 @@ namespace DXFImporter
 	{
 		private bool multipleSelect = false;
 		private bool clicked = false;
-				
-		private double XMax, XMin;
-		private double YMax, YMin;
 
-		private double scaleX = 1;
+		public double XMax { get; private set; }
+		public double XMin { get; private set; }
+		public double YMax { get; private set; }
+        public double YMin { get; private set; }
+
+        private double scaleX = 1;
 		private double scaleY = 1;
 		private double mainScale = 1;
 
@@ -190,8 +192,10 @@ namespace DXFImporter
 							mainScale = 1;
 
 						temp.Draw(lePen, g, mainScale);
+							
 
-						break;
+
+                            break;
 					}
 					case 3:				//rectangle 
 					{
@@ -218,8 +222,11 @@ namespace DXFImporter
 							mainScale = 1;
 
 						temp.Draw(lePen, g, mainScale);
+                        //DEBUG
+                        Console.WriteLine("mainScale = " + mainScale);
+                        Console.WriteLine("circle center = " + temp.AccessCenterPoint.ToString() );
 
-						break;
+                        break;
 					}
 					case 5:				//polyline
 					{
@@ -393,6 +400,7 @@ namespace DXFImporter
 
 		public void RecalculateScale()
 		{
+			/*
 			if (XMax > this.pictureBox1.Size.Width)
 				scaleX = (double) (this.pictureBox1.Size.Width) / (double) XMax;
 			
@@ -400,6 +408,8 @@ namespace DXFImporter
 				scaleY = (double) (this.pictureBox1.Size.Height) / (double) YMax;
 			
 			mainScale = Math.Min(scaleX, scaleY);
+			*/
+			mainScale = 1;
 		}
 
 		protected override void DefWndProc(ref Message m)		//DefWndProc is overriden to capture left mouse click on the title bar of the canvas...
