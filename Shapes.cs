@@ -21,7 +21,7 @@ namespace DXFImporter
 
 		protected Color contourColor;
 		protected Color fillColor;
-		protected int lineWidth;
+		protected float lineWidth;
 
 		public int shapeIdentifier;
 		public int rotation;
@@ -106,7 +106,7 @@ namespace DXFImporter
 			set;
 		}
 
-		public abstract int AccessLineWidth
+		public abstract float AccessLineWidth
 		{
 			get;
 			set;
@@ -130,7 +130,7 @@ namespace DXFImporter
 		protected Point startPoint;
 		protected Point endPoint;
 
-		public Line (Point start, Point end, Color color, int w)
+		public Line (Point start, Point end, Color color, float w)
 		{
 			startPoint = new Point(start.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
 								   start.Y + (int)Math.Round(OriginOffset.Y - PartOffset.Y) );
@@ -173,7 +173,7 @@ namespace DXFImporter
 			}
 		}
 
-		public override int AccessLineWidth
+		public override float AccessLineWidth
 		{
 			get
 			{
@@ -314,7 +314,7 @@ namespace DXFImporter
 	#region Rectangle class
 	public class rectangle : DXFImporter.Line
 	{
-		public rectangle (Point start, Point end, Color color, Color fill, int w, int angle)
+		public rectangle (Point start, Point end, Color color, Color fill, float w, int angle)
 		{
 			startPoint = start;
 			endPoint = end;
@@ -667,7 +667,7 @@ namespace DXFImporter
 		private Point centerPoint;
 		private double radius;
 
-		public circle (Point center, double r, Color color1, Color color2, int w)
+		public circle (Point center, double r, Color color1, Color color2, float w)
 		{
 			centerPoint = center;
 			radius = r;
@@ -702,7 +702,7 @@ namespace DXFImporter
 			}
 		}
 
-		public override int AccessLineWidth
+		public override float AccessLineWidth
 		{
 			get
 			{
@@ -873,7 +873,7 @@ namespace DXFImporter
 	{
 		private ArrayList linePoint;
 
-		public FreehandTool (ArrayList points, Color color, int w)
+		public FreehandTool (ArrayList points, Color color, float w)
 		{
 			
 			contourColor = color;
@@ -910,7 +910,7 @@ namespace DXFImporter
 		}
 
 
-		public override int AccessLineWidth
+		public override float AccessLineWidth
 		{
 			get
 			{
@@ -954,7 +954,7 @@ namespace DXFImporter
 	{
 		private ArrayList listOfLines;
 
-		public polyline (Color color, int w)
+		public polyline (Color color, float w)
 		{
 			listOfLines = new ArrayList();
 
@@ -987,7 +987,7 @@ namespace DXFImporter
 		}
 
 
-		public override int AccessLineWidth
+		public override float AccessLineWidth
 		{
 			get
 			{
@@ -1094,7 +1094,7 @@ namespace DXFImporter
 		private double startAngle;
 		private double sweepAngle;
 
-		public arc (Point center, double r, double startangle, double sweepangle,Color color1, Color color2, int w)
+		public arc (Point center, double r, double startangle, double sweepangle,Color color1, Color color2, float w)
 		{
 			centerPoint = center;
 			radius = r;
@@ -1148,7 +1148,7 @@ namespace DXFImporter
 			}
 		}
 
-		public override int AccessLineWidth
+		public override float AccessLineWidth
 		{
 			get
 			{

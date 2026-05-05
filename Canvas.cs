@@ -25,6 +25,8 @@ namespace DXFImporter
 	/// </summary>
 	public class Canvas : System.Windows.Forms.Form
 	{
+		public const float LineWidthConstant = 0.65f;
+
 		private bool multipleSelect = false;
 		private bool clicked = false;
 
@@ -200,7 +202,7 @@ namespace DXFImporter
 
 		public void setup(PointF originOffset)
 		{
-			Shape.OriginOffset = originOffset;
+			Shape.OriginOffset = new PointF(originOffset.X + LineWidthConstant - 0.35f, originOffset.Y - LineWidthConstant);
 			Shape.PartOffset = new PointF((float)XMin, (float)YMax);
 			Shape.Dimension = new RectangleF((float)XMin, (float)YMax, (float)(XMax - XMin), (float)(YMax - YMin));
 		}
@@ -674,7 +676,7 @@ namespace DXFImporter
 			
 
 
-			int ix = drawingList.Add(new Line (new Point((int)x1, (int) -y1), new Point((int)x2, (int)-y2) , Color.White, 1));
+			int ix = drawingList.Add(new Line (new Point((int)x1, (int) -y1), new Point((int)x2, (int)-y2) , Color.White, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (2, ix));
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -695,7 +697,7 @@ namespace DXFImporter
 			double y2 = 0;
             			
 
-			thePolyLine = new polyline (Color.White, 1);
+			thePolyLine = new polyline (Color.White, LineWidthConstant);
 			
 			int ix = drawingList.Add(thePolyLine);
 			objectIdentifier.Add (new DrawingObject (5, ix));
@@ -831,7 +833,7 @@ namespace DXFImporter
             RecalculateScale();
 
 
-            int ix = drawingList.Add(new circle (new Point ((int)x1, (int)-y1), radius, Color.White, Color.Red, 1));
+            int ix = drawingList.Add(new circle (new Point ((int)x1, (int)-y1), radius, Color.White, Color.Red, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (4, ix));
 
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -916,7 +918,7 @@ namespace DXFImporter
             RecalculateScale();
 
 
-            int ix = drawingList.Add(new arc (new Point ((int)x1, (int)-y1), radius, angle1, angle2, Color.White, Color.Red, 1));
+            int ix = drawingList.Add(new arc (new Point ((int)x1, (int)-y1), radius, angle1, angle2, Color.White, Color.Red, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (6, ix));
 
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
