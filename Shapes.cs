@@ -31,59 +31,60 @@ namespace DXFImporter
 		public static PointF PartOffset = new PointF();
 		public static RectangleF Dimension = new RectangleF();
 
-		public PointF getOffsetedPosition(Point point)
+		public static PointF getOffsetedPosition(Point point)
 		{
-			float x = point.X - (float)Math.Round(PartOffset.X - OriginOffset.X);
-			float y = point.Y + (float)Math.Round(PartOffset.Y + OriginOffset.Y);
+			float x = point.X - (float)(PartOffset.X - OriginOffset.X);
+			float y = point.Y + (float)(PartOffset.Y + OriginOffset.Y);
 
 
             return new PointF(x, y);
 		}
-        public float getOffsetedPositionX(float x)
+        public static float getOffsetedPositionX(float x)
         {
-            return (x - (float)Math.Round(PartOffset.X - OriginOffset.X));
+            return (x - (float)(PartOffset.X - OriginOffset.X));
         }
-        public float getOffsetedPositionX(int x)
+        public static float getOffsetedPositionX(int x)
         {
-            return (x - (float)Math.Round(PartOffset.X - OriginOffset.X));
-        }
-
-        public float getOffsetedPositionY(float y)
-        {
-            return (y + (float)Math.Round(PartOffset.Y + OriginOffset.Y));
-        }
-        public float getOffsetedPositionY(int y)
-        {
-            return (y + (float)Math.Round(PartOffset.Y + OriginOffset.Y));
+            return (x - (float)(PartOffset.X - OriginOffset.X));
         }
 
-		public void DrawOffsetedRectangle(Graphics g, Pen pen, float Xstart, float Ystart, float Xend, float Yend)
+        public static float getOffsetedPositionY(float y)
+        {
+            return (y + (float)(PartOffset.Y + OriginOffset.Y));
+        }
+        public static float getOffsetedPositionY(int y)
+        {
+            return (y + (float)(PartOffset.Y + OriginOffset.Y));
+        }
+
+		public void DrawOffsetedRectangle(ref Graphics g, ref Pen pen, float Xstart, float Ystart, float Xend, float Yend)
 		{
-			DrawOffsetedLine(g, pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart),
+			DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart),
 								     getOffsetedPositionY(Xend), getOffsetedPositionY(Ystart));
 
-            DrawOffsetedLine(g, pen, getOffsetedPositionY(Xend), getOffsetedPositionY(Ystart),
+            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(Xend), getOffsetedPositionY(Ystart),
                                      getOffsetedPositionY(Xend), getOffsetedPositionY(Yend));
 
-            DrawOffsetedLine(g, pen, getOffsetedPositionY(Xend), getOffsetedPositionY(Yend),
+            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(Xend), getOffsetedPositionY(Yend),
                                      getOffsetedPositionY(Xstart), getOffsetedPositionY(Yend));
 
-            DrawOffsetedLine(g, pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Yend),
+            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Yend),
                                      getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart));
         }
-		public void DrawOffsetedLine(Graphics g, Pen pen, float Xstart, float Ystart, float Xend, float Yend)
+
+		public void DrawOffsetedLine(ref Graphics g, ref Pen pen, float Xstart, float Ystart, float Xend, float Yend)
 		{
-            g.DrawLine(pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart),
-                            getOffsetedPositionY(Xend), getOffsetedPositionY(Yend));
+            g.DrawLine(pen, getOffsetedPositionX(Xstart), getOffsetedPositionY(Ystart),
+                            getOffsetedPositionX(Xend),   getOffsetedPositionY(Yend) );
         }
 
-        public void DrawOffsetedEllipse(Graphics g, Pen pen, Point centerPoint, float radius)
+        public void DrawOffsetedEllipse(ref Graphics g, ref Pen pen, Point centerPoint, float radius)
         {
             PointF pos = getOffsetedPosition(centerPoint);//get the value corresponding to our workzone
             g.DrawEllipse(pen, pos.X - radius, pos.Y - radius, radius * 2, radius * 2);
         }
 
-        public void DrawOffsetedArc(Graphics g, Pen pen, Point centerPoint, float radius, float startAngle, float tempAngle)
+        public void DrawOffsetedArc(ref Graphics g, ref Pen pen, Point centerPoint, float radius, float startAngle, float tempAngle)
         {
             PointF pos = getOffsetedPosition(centerPoint);//get the value corresponding to our workzone
 
@@ -205,8 +206,8 @@ namespace DXFImporter
 				highlighted = false;
 			}
 
-			DrawOffsetedLine(g, pen, startPoint.X, startPoint.Y, endPoint.X, endPoint.Y	);
-			g.DrawLine(pen, getOffsetedPosition(startPoint), getOffsetedPosition(endPoint) );
+			DrawOffsetedLine(ref g, ref pen, startPoint.X, startPoint.Y, endPoint.X, endPoint.Y	);
+			//g.DrawLine(pen, getOffsetedPosition(startPoint), getOffsetedPosition(endPoint) );
 		}
 
 		
@@ -334,7 +335,7 @@ namespace DXFImporter
 				return;
 			}
                  
-			DrawOffsetedRectangle(g, pen, GetStartPoint.X, GetStartPoint.Y, GetEndPoint.X, GetEndPoint.Y);
+			DrawOffsetedRectangle(ref g, ref pen, GetStartPoint.X, GetStartPoint.Y, GetEndPoint.X, GetEndPoint.Y);
 
 			return;			
 		}
@@ -368,7 +369,7 @@ namespace DXFImporter
 				P4 = CalculateRotatedNewPoint(P4, center, angle);   //Bottom left
 
 
-				DrawOffsetedRectangle(g, pen, P1.X, P1.Y, P2.X, P2.Y);
+				DrawOffsetedRectangle(ref g, ref pen, P1.X, P1.Y, P2.X, P2.Y);
 
 				return;
 
@@ -755,7 +756,7 @@ namespace DXFImporter
 				highlighted = false;
 			}
 
-			DrawOffsetedEllipse(g, pen, centerPoint, (float)radius);
+			DrawOffsetedEllipse(ref g, ref pen, centerPoint, (float)radius);
 		}
 
 		/*public void Draw (Pen pen, Graphics g, double scale)
@@ -1230,7 +1231,7 @@ namespace DXFImporter
 				tempAngle = (float) startAngle - (float) sweepAngle;
 
 			
-			DrawOffsetedArc(g, pen, centerPoint, (float)radius, (float)startAngle, tempAngle);
+			DrawOffsetedArc(ref g, ref pen, centerPoint, (float)radius, (float)startAngle, tempAngle);
 		}
 		
 		public override bool Highlight(Pen pen, Graphics g, Point point)
