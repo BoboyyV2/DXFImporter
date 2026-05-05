@@ -11,12 +11,14 @@ using System;
 using System.Collections;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using static System.Windows.Forms.AxHost;
 
 namespace DXFImporter
 {
 	#region Shape class - abstract
 	public abstract class Shape
 	{
+
 		protected Color contourColor;
 		protected Color fillColor;
 		protected int lineWidth;
@@ -27,8 +29,71 @@ namespace DXFImporter
 
 		public static PointF OriginOffset = new PointF();
 		public static PointF PartOffset = new PointF();
+		public static RectangleF Dimension = new RectangleF();
 
-		public abstract Color AccessContourColor
+		public PointF getOffsetedPosition(Point point)
+		{
+			float x = point.X - (float)Math.Round(PartOffset.X - OriginOffset.X);
+			float y = point.Y + (float)Math.Round(PartOffset.Y + OriginOffset.Y);
+
+
+            return new PointF(x, y);
+		}
+        public float getOffsetedPositionX(float x)
+        {
+            return (x - (float)Math.Round(PartOffset.X - OriginOffset.X));
+        }
+        public float getOffsetedPositionX(int x)
+        {
+            return (x - (float)Math.Round(PartOffset.X - OriginOffset.X));
+        }
+
+        public float getOffsetedPositionY(float y)
+        {
+            return (y + (float)Math.Round(PartOffset.Y + OriginOffset.Y));
+        }
+        public float getOffsetedPositionY(int y)
+        {
+            return (y + (float)Math.Round(PartOffset.Y + OriginOffset.Y));
+        }
+
+		public void DrawOffsetedRectangle(Graphics g, Pen pen, float Xstart, float Ystart, float Xend, float Yend)
+		{
+			DrawOffsetedLine(g, pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart),
+								     getOffsetedPositionY(Xend), getOffsetedPositionY(Ystart));
+
+            DrawOffsetedLine(g, pen, getOffsetedPositionY(Xend), getOffsetedPositionY(Ystart),
+                                     getOffsetedPositionY(Xend), getOffsetedPositionY(Yend));
+
+            DrawOffsetedLine(g, pen, getOffsetedPositionY(Xend), getOffsetedPositionY(Yend),
+                                     getOffsetedPositionY(Xstart), getOffsetedPositionY(Yend));
+
+            DrawOffsetedLine(g, pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Yend),
+                                     getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart));
+        }
+		public void DrawOffsetedLine(Graphics g, Pen pen, float Xstart, float Ystart, float Xend, float Yend)
+		{
+            g.DrawLine(pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart),
+                            getOffsetedPositionY(Xend), getOffsetedPositionY(Yend));
+        }
+
+        public void DrawOffsetedEllipse(Graphics g, Pen pen, Point centerPoint, float radius)
+        {
+            PointF pos = getOffsetedPosition(centerPoint);//get the value corresponding to our workzone
+            g.DrawEllipse(pen, pos.X - radius, pos.Y - radius, radius * 2, radius * 2);
+        }
+
+        public void DrawOffsetedArc(Graphics g, Pen pen, Point centerPoint, float radius, float startAngle, float tempAngle)
+        {
+            PointF pos = getOffsetedPosition(centerPoint);//get the value corresponding to our workzone
+
+            g.DrawArc(pen, pos.X - radius , pos.Y - radius ,
+					       radius * 2, radius * 2, -startAngle, tempAngle);
+
+        }
+
+
+        public abstract Color AccessContourColor
 		{
 			get;
 			set;
@@ -140,20 +205,11 @@ namespace DXFImporter
 				highlighted = false;
 			}
 
-			g.DrawLine(pen, startPoint, endPoint);
+			DrawOffsetedLine(g, pen, startPoint.X, startPoint.Y, endPoint.X, endPoint.Y	);
+			g.DrawLine(pen, getOffsetedPosition(startPoint), getOffsetedPosition(endPoint) );
 		}
 
-		public void Draw (Pen pen, Graphics g, double scale)
-		{
-			if (highlighted)
-			{
-				pen.Color = Color.Red;
-				highlighted = false;
-			}
-			
-			//g.DrawLine(pen, startPoint, endPoint);
-			g.DrawLine (pen, (float)startPoint.X* (float)scale, (float)startPoint.Y* (float)scale, (float)endPoint.X* (float)scale, (float)endPoint.Y * (float) scale);
-		}
+		
 
 		public virtual Point GetStartPoint
 		{
@@ -271,22 +327,14 @@ namespace DXFImporter
 
 		public override void Draw (Pen pen, Graphics g)
 		{
-			if (highlighted)
-			{
-				pen.Color = Color.Red;
-				highlighted = false;
-			}
 
 			if (AccessRotation != 0)
 			{
 				DrawRotatedRectangle (pen, g);
 				return;
 			}
-                       					
-			g.DrawLine(pen, GetStartPoint.X, GetStartPoint.Y, GetEndPoint.X, GetStartPoint.Y);
-			g.DrawLine(pen, GetEndPoint.X, GetStartPoint.Y, GetEndPoint.X, GetEndPoint.Y);
-			g.DrawLine(pen, GetEndPoint.X, GetEndPoint.Y, GetStartPoint.X, GetEndPoint.Y);
-			g.DrawLine(pen, GetStartPoint.X, GetEndPoint.Y, GetStartPoint.X, GetStartPoint.Y);
+                 
+			DrawOffsetedRectangle(g, pen, GetStartPoint.X, GetStartPoint.Y, GetEndPoint.X, GetEndPoint.Y);
 
 			return;			
 		}
@@ -317,13 +365,10 @@ namespace DXFImporter
 				P3 = CalculateRotatedNewPoint(P3, center, angle);	//Bottom right
 
 				P2 = CalculateRotatedNewPoint(P2, center, angle);	//Top right
-				P4 = CalculateRotatedNewPoint(P4, center, angle);	//Bottom left
+				P4 = CalculateRotatedNewPoint(P4, center, angle);   //Bottom left
 
-						
-				g.DrawLine(pen, P1, P3);
-				g.DrawLine(pen, P3, P2);
-				g.DrawLine(pen, P2, P4);
-				g.DrawLine(pen, P4, P1);
+
+				DrawOffsetedRectangle(g, pen, P1.X, P1.Y, P2.X, P2.Y);
 
 				return;
 
@@ -710,7 +755,7 @@ namespace DXFImporter
 				highlighted = false;
 			}
 
-			g.DrawEllipse(pen, centerPoint.X - (int) radius, centerPoint.Y - (int)radius, (int)radius*2, (int)radius*2);
+			DrawOffsetedEllipse(g, pen, centerPoint, (float)radius);
 		}
 
 		/*public void Draw (Pen pen, Graphics g, double scale)
@@ -968,11 +1013,6 @@ namespace DXFImporter
 
 		public override void Draw(Pen pen, Graphics g)
 		{
-			if (highlighted)
-			{
-				pen.Color = Color.Red;
-				highlighted = false;
-			}
 
 			foreach (Line obj in listOfLines)
 			{
@@ -991,7 +1031,7 @@ namespace DXFImporter
 
 			foreach (Line obj in listOfLines)
 			{
-				obj.Draw(pen, g, scale);
+				obj.Draw(pen, g);
 			}
 
 		}
@@ -1168,11 +1208,7 @@ namespace DXFImporter
 		{
 			//g.DrawEllipse(pen, (float) centerPoint.X* (float)scale - (float) radius* (float)scale, (float)centerPoint.Y * (float)scale - (float)radius* (float)scale, (float)radius*2* (float)scale, (float)radius*2* (float)scale);
 
-			if (highlighted)
-			{
-				pen.Color = Color.Red;
-				highlighted = false;
-			}
+			
 
 			float tempAngle = 0;
 			
@@ -1194,8 +1230,7 @@ namespace DXFImporter
 				tempAngle = (float) startAngle - (float) sweepAngle;
 
 			
-
-			g.DrawArc (pen, (float)centerPoint.X* (float)scale - (float) radius* (float)scale, (float)centerPoint.Y* (float)scale - (float)radius* (float)scale, (float)radius*2* (float)scale, (float)radius*2* (float)scale, -(float) startAngle, tempAngle);
+			DrawOffsetedArc(g, pen, centerPoint, (float)radius, (float)startAngle, tempAngle);
 		}
 		
 		public override bool Highlight(Pen pen, Graphics g, Point point)

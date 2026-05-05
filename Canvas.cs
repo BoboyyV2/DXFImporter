@@ -57,6 +57,8 @@ namespace DXFImporter
 		private FileInfo theSourceFile;
 
 		private Rectangle highlightedRegion = new Rectangle (0,0,0,0);
+		//TMP
+		private bool moved { get; set; } = false;
 
 
 
@@ -199,25 +201,30 @@ namespace DXFImporter
 		public void setup(PointF originOffset)
 		{
 			Shape.OriginOffset = originOffset;
-			Shape.PartOffset = new PointF((float)XMin, (float)YMin);
+			Shape.PartOffset = new PointF((float)XMin, (float)YMax);
+			Shape.Dimension = new RectangleF((float)XMin, (float)YMax, (float)(XMax - XMin), (float)(YMax - YMin));
 		}
 		#region Drawing and Highlighting Methods
 
 		public void Draw (Graphics g)
 		{
 			Pen lePen = new Pen(Color.White, 3);
-			/*
-			g.TranslateTransform(this.pictureBox1.Location.X + 1, this.pictureBox1.Location.Y + this.pictureBox1.Size.Height - 1);
 
+			//used for debugging using the base ui of this lib
+            //g.TranslateTransform(-800, 650);//change the value to fit whatever
+
+
+            moved = true;
+            /*
 			if (YMin < 0)
 				g.TranslateTransform(0, - (int)Math.Abs(YMin) );			//transforms point-of-origin to the lower left corner of the canvas.
 
 			if (XMin < 0)
 				g.TranslateTransform((int) Math.Abs(XMin), 0);
 			*/
-			//	g.SmoothingMode = SmoothingMode.AntiAlias; 
+            //	g.SmoothingMode = SmoothingMode.AntiAlias; 
 
-			foreach (DrawingObject obj in objectIdentifier)						//iterates through the objects
+            foreach (DrawingObject obj in objectIdentifier)						//iterates through the objects
 			{
 				switch (obj.shapeType)
 				{
@@ -237,7 +244,7 @@ namespace DXFImporter
 						if (mainScale == 0)
 							mainScale = 1;
 
-						temp.Draw(lePen, g, mainScale);
+						temp.Draw(lePen, g);
 							
 
 
@@ -340,7 +347,7 @@ namespace DXFImporter
 			Graphics g = daGe;
 			Pen lePen = new Pen(Color.Yellow, 1);
 		
-			g = pictureBox1.CreateGraphics();
+			//g = pictureBox1.CreateGraphics();
 			
 			g.TranslateTransform(this.pictureBox1.Left+8, this.pictureBox1.Size.Height+8);	//transforms point-of-origin to the lower left corner of the canvas.
 
@@ -661,7 +668,6 @@ namespace DXFImporter
 
 			
 
-			mainScale = Math.Min(scaleX, scaleY);
 			//TMPFIX
 			RecalculateScale();
 
@@ -1032,9 +1038,10 @@ namespace DXFImporter
 
 			if (onCanvas == true)
 			{
+				/*
 				if (multipleSelect)
 					HiglightObject();
-				
+				*/
 				Refresh();
 				
                 	
