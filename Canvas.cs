@@ -28,10 +28,10 @@ namespace DXFImporter
 		private bool multipleSelect = false;
 		private bool clicked = false;
 
-		public double XMax { get; private set; }
-		public double XMin { get; private set; }
-		public double YMax { get; private set; }
-        public double YMin { get; private set; }
+		public double XMax { get; private set; } = double.MinValue;
+        public double XMin { get; private set; } = double.MaxValue;
+		public double YMax { get; private set; } = double.MinValue;
+		public double YMin { get; private set; } = double.MaxValue;
 
         private double scaleX = 1;
 		private double scaleY = 1;
@@ -158,18 +158,48 @@ namespace DXFImporter
 			this.ResumeLayout(false);
 
 		}
-		#endregion
+        #endregion
 
-		public void getLayout()
+        /**
+         * <summary>check the layout values and correct them if not initialized somehow</summary>
+         */
+		public void checkLayout()
 		{
-			offset = offset = new PointF((float)XMin, (float)YMin);
-            dimensions = new RectangleF((float)XMin, (float)YMin, (float)(XMin - XMax), (float)(YMin - YMax));
+			if (XMin == double.MaxValue && XMax == double.MinValue)
+			{
+				XMin = 0;
+				XMax = 0;
+			}
+			else if (XMin == double.MaxValue)
+			{
+				XMin = XMax;
+			}
+			else if (XMax == double.MinValue)
+			{
+				XMax = XMin;
+			}
+
+            if (YMin == double.MaxValue && YMax == double.MinValue)
+            {
+                YMin = 0;
+                YMax = 0;
+            }
+            else if (YMin == double.MaxValue)
+            {
+                YMin = YMax;
+            }
+            else if (YMax == double.MinValue)
+            {
+                YMax = YMin;
+            }
+
         }
 
-		public void setup(PointF originOffset, PointF partOffset)
+
+		public void setup(PointF originOffset)
 		{
 			Shape.OriginOffset = originOffset;
-			Shape.PartOffset = partOffset;
+			Shape.PartOffset = new PointF((float)XMin, (float)YMin);
 		}
 		#region Drawing and Highlighting Methods
 
@@ -629,20 +659,7 @@ namespace DXFImporter
 			//***************This Part is related with the drawing editor...the data taken from the dxf file******//
 			//***************is interpreted hereinafter***********************************************************//
 
-			if ((Math.Abs(XMax) - Math.Abs(XMin)) > this.pictureBox1.Size.Width)
-			{
-				scaleX = (double) (this.pictureBox1.Size.Width) / (double) (Math.Abs(XMax) - Math.Abs(XMin));
-			}
-			else
-				scaleX = 1;
-
-
-			if ((Math.Abs(YMax) - Math.Abs(YMin)) > this.pictureBox1.Size.Height)
-			{
-				scaleY = (double) (this.pictureBox1.Size.Height) / (double) (Math.Abs(YMax) - Math.Abs(YMin));
-			}
-			else
-				scaleY = 1;
+			
 
 			mainScale = Math.Min(scaleX, scaleY);
 			//TMPFIX
@@ -734,22 +751,8 @@ namespace DXFImporter
 			if (openOrClosed == 1)
 				thePolyLine.AppendLine (new Line ( (Point)pointList[numberOfVertices-1], (Point)pointList[0],Color.White, 1));
 
-			if ((Math.Abs(XMax) - Math.Abs(XMin)) > this.pictureBox1.Size.Width)
-			{
-				scaleX = (double) (this.pictureBox1.Size.Width) / (double) (Math.Abs(XMax) - Math.Abs(XMin));
-			}
-			else
-				scaleX = 1;
 
-
-			if ((Math.Abs(YMax) - Math.Abs(YMin)) > this.pictureBox1.Size.Height)
-			{
-				scaleY = (double) (this.pictureBox1.Size.Height) / (double) (Math.Abs(YMax) - Math.Abs(YMin));
-			}
-			else
-				scaleY = 1;
-
-			mainScale = Math.Min(scaleX, scaleY);
+			
             //TMPFIX
             RecalculateScale();
 
@@ -817,22 +820,7 @@ namespace DXFImporter
 			//***************is interpreted hereinafter***********************************************************//
 
 
-			if ((Math.Abs(XMax) - Math.Abs(XMin)) > this.pictureBox1.Size.Width)
-			{
-				scaleX = (double) (this.pictureBox1.Size.Width) / (double) (Math.Abs(XMax) - Math.Abs(XMin));
-			}
-			else
-				scaleX = 1;
-
-
-			if ((Math.Abs(YMax) - Math.Abs(YMin)) > this.pictureBox1.Size.Height)
-			{
-				scaleY = (double) (this.pictureBox1.Size.Height) / (double) (Math.Abs(YMax) - Math.Abs(YMin));
-			}
-			else
-				scaleY = 1;
-
-			mainScale = Math.Min(scaleX, scaleY);
+			
             //TMPFIX
             RecalculateScale();
 
@@ -917,22 +905,7 @@ namespace DXFImporter
 			//***************is interpreted hereinafter***********************************************************//
 
 
-			if ((Math.Abs(XMax) - Math.Abs(XMin)) > this.pictureBox1.Size.Width)
-			{
-				scaleX = (double) (this.pictureBox1.Size.Width) / (double) (Math.Abs(XMax) - Math.Abs(XMin));
-			}
-			else
-				scaleX = 1;
-
-
-			if ((Math.Abs(YMax) - Math.Abs(YMin)) > this.pictureBox1.Size.Height)
-			{
-				scaleY = (double) (this.pictureBox1.Size.Height) / (double) (Math.Abs(YMax) - Math.Abs(YMin));
-			}
-			else
-				scaleY = 1;
-
-			mainScale = Math.Min(scaleX, scaleY);
+			
             //TMPFIX
             RecalculateScale();
 
