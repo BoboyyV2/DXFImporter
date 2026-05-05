@@ -84,8 +84,7 @@ namespace DXFImporter
 
 			
 
-			XMax = this.pictureBox1.Size.Width;
-			YMax = this.pictureBox1.Size.Height /2;
+			
 
 
 			
