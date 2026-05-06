@@ -88,6 +88,8 @@ namespace DXFImporter
         {
             PointF pos = getOffsetedPosition(centerPoint);//get the value corresponding to our workzone
 
+            //g.DrawArc (pen, (float)centerPoint.X - (float) radius, (float)centerPoint.Y - (float)radius, (float)radius*2, (float)radius*2,
+			//           - (float) startAngle, -360 + (float) startAngle - (float)sweepAngle);
             g.DrawArc(pen, pos.X - radius , pos.Y - radius ,
 					       radius * 2, radius * 2, -startAngle, tempAngle);
 

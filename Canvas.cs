@@ -807,22 +807,24 @@ namespace DXFImporter
 				if (line1 == "40")
 				{
 					radius = Convert.ToDouble(line2);
+					PointF center = new PointF((float)x1, (float)y1);
 
-					if ( (x1 + radius) > XMax)
-						XMax = x1 + radius;
+					if ((x1 + radius) > XMax)
+						
+						XMax = Trigo.GetRealLimit(center, (float)radius, 0, 360, 0).X;
 
-					if ( (x1 - radius) < XMin)
+                    if ( (x1 - radius) < XMin)
 					{ 
-						XMin = x1 - radius;
+						XMin = Trigo.GetRealLimit(center, (float)radius, 0, 360, 180).X;
                     }
 
                     if (y1 + radius > YMax)
-						YMax = y1 + radius;
+						YMax = Trigo.GetRealLimit(center, (float)radius, 0, 360, 270).Y;
 
-					if ( (y1 - radius) < YMin)
-						YMin = y1 - radius;
+                    if ( (y1 - radius) < YMin)
+						YMin = Trigo.GetRealLimit(center, (float)radius, 0, 360, 90).Y;
 
-				}
+                }
 
 
 
@@ -865,10 +867,13 @@ namespace DXFImporter
 			{
 				GetLineCouple (reader, out line1, out line2);
 
+				//the following has been replaced by trigonometrical computing
+				
 				if (line1 == "10")
 				{
 					x1 = Convert.ToDouble(line2);
 					//TODO : trigo pour avoir les bonne
+					/*
 					if (x1 > XMax)
 						XMax = x1;
 
@@ -877,6 +882,7 @@ namespace DXFImporter
                         //DEBUG
                         Console.WriteLine("new Xmin in Arc 10 : " + x1 + " ; " + y1 );
                     }
+					*/
 
                 }
 
@@ -884,10 +890,12 @@ namespace DXFImporter
 				if (line1 == "20")
 				{
 					y1 = Convert.ToDouble(line2);
+					/*
 					if (y1 > YMax)
 						YMax = y1;
 					if (y1 < YMin)
 						YMin = y1;
+					*/
 				}
 
 
@@ -895,6 +903,7 @@ namespace DXFImporter
 				{
 					radius = Convert.ToDouble(line2);
 
+					/*
 					if ( (x1 + radius) > XMax)
 						XMax = x1 + radius;
 
@@ -910,7 +919,9 @@ namespace DXFImporter
 
 					if ( (y1 - radius) < YMin)
 						YMin = y1 - radius;
+					*/
 				}
+				
 
 				if (line1 == "50")
 					angle1 = Convert.ToDouble(line2);
@@ -921,14 +932,44 @@ namespace DXFImporter
 
 			}
 			while(line1 != "51");
+			//the computing
+			PointF center = new PointF((float)x1, (float)y1);
+
+            double candidateXMin = Trigo.GetRealLimit(center, (float)radius, 0, 360, 0).X;
+			if(candidateXMin < XMin)
+			{
+				XMin = candidateXMin;
+
+            }
+
+            double candidateXMax = Trigo.GetRealLimit(center, (float)radius, 0, 360, 180).X;
+            if (candidateXMax > XMax)
+            {
+                XMax = candidateXMax;
+
+            }
+
+            double candidateYMin = Trigo.GetRealLimit(center, (float)radius, 0, 360, 90).Y;
+            if (candidateYMin < YMin)
+            {
+                YMin = candidateYMin;
+
+            }
+
+            double candidateYMax = Trigo.GetRealLimit(center, (float)radius, 0, 360, 270).Y;
+            if (candidateYMax > YMax)
+            {
+                YMax = candidateYMax;
+
+            }
 
 
-			//****************************************************************************************************//
-			//***************This Part is related with the drawing editor...the data taken from the dxf file******//
-			//***************is interpreted hereinafter***********************************************************//
+            //****************************************************************************************************//
+            //***************This Part is related with the drawing editor...the data taken from the dxf file******//
+            //***************is interpreted hereinafter***********************************************************//
 
 
-			
+
             //TMPFIX
             RecalculateScale();
 
