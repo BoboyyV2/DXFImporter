@@ -131,8 +131,8 @@ namespace DXFImporter
          * <param name="targetAngle">the targeted angle, this value should be :<br></br>
          *  0   for XMax<br></br>
          *  180 for XMin<br></br>
-         *  270 for YMax<br></br>
-         *  90  for YMin</param>
+         *  90 for YMax<br></br>
+         *  270  for YMin</param>
          */
         public static PointF GetRealLimit(PointF center, float radius, float startAngle, float sweepAngle, float targetAngle)
         {

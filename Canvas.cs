@@ -25,7 +25,7 @@ namespace DXFImporter
 	/// </summary>
 	public class Canvas : System.Windows.Forms.Form
 	{
-		public const float LineWidthConstant = 0.65f;
+		public const float LineWidthConstant = 0.25f;
 
 		private bool multipleSelect = false;
 		private bool clicked = false;
@@ -209,10 +209,11 @@ namespace DXFImporter
 
 		public void Draw (Graphics g)
 		{
-			Pen lePen = new Pen(Color.White, 3);
+			Pen lePen = new Pen(Color.White, 1);
 
 			//used for debugging using the base ui of this lib
 			//g.TranslateTransform(-800, 650);//change the value to fit whatever
+			/*
 			float width = (float)(XMax - XMin);
 			float height = (float)(YMax - YMin);
 			PointF offset = new PointF((float)XMin, (float)YMax);
@@ -221,6 +222,7 @@ namespace DXFImporter
 			Console.WriteLine("XMin = " + XMin);
 
             g.TranslateTransform( -offset.X, offset.Y );
+			*/
 
 
             
@@ -949,14 +951,14 @@ namespace DXFImporter
 
             }
 
-            double candidateYMin = Trigo.GetRealLimit(center, (float)radius, 0, 360, 90).Y;
+            double candidateYMin = Trigo.GetRealLimit(center, (float)radius, 0, 360, 270).Y;
             if (candidateYMin < YMin)
             {
                 YMin = candidateYMin;
 
             }
 
-            double candidateYMax = Trigo.GetRealLimit(center, (float)radius, 0, 360, 270).Y;
+            double candidateYMax = Trigo.GetRealLimit(center, (float)radius, 0, 360, 90).Y;
             if (candidateYMax > YMax)
             {
                 YMax = candidateYMax;

@@ -81,7 +81,7 @@ namespace DXFImporter
         public void DrawOffsetedEllipse(ref Graphics g, ref Pen pen, Point centerPoint, float radius)
         {
             PointF pos = getOffsetedPosition(centerPoint);//get the value corresponding to our workzone
-            g.DrawEllipse(pen, pos.X - radius, pos.Y - radius, radius * 2, radius * 2);
+            g.DrawEllipse(pen, pos.X - radius, pos.Y - radius, (radius * 2) - pen.Width, (radius * 2) - pen.Width);
         }
 
         public void DrawOffsetedArc(ref Graphics g, ref Pen pen, Point centerPoint, float radius, float startAngle, float tempAngle)
@@ -90,8 +90,7 @@ namespace DXFImporter
 
             //g.DrawArc (pen, (float)centerPoint.X - (float) radius, (float)centerPoint.Y - (float)radius, (float)radius*2, (float)radius*2,
 			//           - (float) startAngle, -360 + (float) startAngle - (float)sweepAngle);
-            g.DrawArc(pen, pos.X - radius , pos.Y - radius ,
-					       radius * 2, radius * 2, -startAngle, tempAngle);
+            g.DrawArc(pen, pos.X - radius , pos.Y - radius, (radius * 2) - pen.Width, (radius * 2) - pen.Width, -startAngle, tempAngle);
 
         }
 
