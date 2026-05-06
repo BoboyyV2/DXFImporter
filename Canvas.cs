@@ -212,18 +212,18 @@ namespace DXFImporter
 			Pen lePen = new Pen(Color.White, 3);
 
 			//used for debugging using the base ui of this lib
-            //g.TranslateTransform(-800, 650);//change the value to fit whatever
+			//g.TranslateTransform(-800, 650);//change the value to fit whatever
+			float width = (float)(XMax - XMin);
+			float height = (float)(YMax - YMin);
+			PointF offset = new PointF((float)XMin, (float)YMax);
+
+			//DEBUG
+			Console.WriteLine("XMin = " + XMin);
+
+            g.TranslateTransform( -offset.X, offset.Y );
 
 
-            moved = true;
-            /*
-			if (YMin < 0)
-				g.TranslateTransform(0, - (int)Math.Abs(YMin) );			//transforms point-of-origin to the lower left corner of the canvas.
-
-			if (XMin < 0)
-				g.TranslateTransform((int) Math.Abs(XMin), 0);
-			*/
-            //	g.SmoothingMode = SmoothingMode.AntiAlias; 
+            
 
             foreach (DrawingObject obj in objectIdentifier)						//iterates through the objects
 			{
@@ -245,8 +245,8 @@ namespace DXFImporter
 						if (mainScale == 0)
 							mainScale = 1;
 
-						temp.Draw(lePen, g);
-							
+						
+                            temp.Draw(lePen, g);
 
 
                             break;
@@ -259,8 +259,8 @@ namespace DXFImporter
 						lePen.Color = temp.AccessContourColor;
 						lePen.Width = temp.AccessLineWidth;
 
-
-						temp.Draw(lePen, g);
+                        
+                        temp.Draw(lePen, g);
 
 						break;
 					}
@@ -275,12 +275,12 @@ namespace DXFImporter
 						if (mainScale == 0)
 							mainScale = 1;
 
-						temp.Draw(lePen, g);
-                        //DEBUG
-                        Console.WriteLine("mainScale = " + mainScale);
-                        Console.WriteLine("circle center = " + temp.AccessCenterPoint.ToString() );
+							
+						
+                            temp.Draw(lePen, g);
 
-                        break;
+
+                            break;
 					}
 					case 5:				//polyline
 					{
@@ -306,9 +306,9 @@ namespace DXFImporter
 						if (mainScale == 0)
 							mainScale = 1;
 
-						temp.Draw(lePen, g, mainScale);
+                            temp.Draw(lePen, g, mainScale);
 
-						break;
+                            break;
 					}
 				}				
 			}
@@ -464,7 +464,6 @@ namespace DXFImporter
 			mainScale = Math.Min(scaleX, scaleY);
 			*/
 			mainScale = 1;
-			Console.WriteLine("Scale recalculation succesfully dodged.");
 		}
 
 		protected override void DefWndProc(ref Message m)		//DefWndProc is overriden to capture left mouse click on the title bar of the canvas...
@@ -616,13 +615,15 @@ namespace DXFImporter
 
 				if (line1 == "10")
 				{
-					x1 = Convert.ToDouble(line2); 
-					
-					if (x1>XMax)
+					x1 = Convert.ToDouble(line2);
+
+					if (x1 > XMax)
 						XMax = x1;
 
 					if (x1 < XMin)
+					{
 						XMin = x1;
+					}
 				}
                 
 				if (line1 == "20")
@@ -643,8 +644,11 @@ namespace DXFImporter
 						XMax = x2;
 
 					if (x2 < XMin)
+					{
 						XMin = x2;
-				}
+					}
+                }
+            
 				
 				if (line1 == "21")
 				{
@@ -724,9 +728,10 @@ namespace DXFImporter
 					if (x1 > XMax)
 						XMax = x1;
 
-					if	(x1 < XMin)
+					if	(x1 < XMin) { 
 						XMin = x1;
-				}
+                    }
+                }
                 
 				if (line1 == "20")
 				{
@@ -807,9 +812,11 @@ namespace DXFImporter
 						XMax = x1 + radius;
 
 					if ( (x1 - radius) < XMin)
+					{ 
 						XMin = x1 - radius;
+                    }
 
-					if (y1 + radius > YMax)
+                    if (y1 + radius > YMax)
 						YMax = y1 + radius;
 
 					if ( (y1 - radius) < YMin)
@@ -861,12 +868,17 @@ namespace DXFImporter
 				if (line1 == "10")
 				{
 					x1 = Convert.ToDouble(line2);
+					//TODO : trigo pour avoir les bonne
 					if (x1 > XMax)
 						XMax = x1;
-					if (x1 < XMin)
-						XMin = x1;
 
-				}
+					if (x1 < XMin) { 
+						XMin = x1;
+                        //DEBUG
+                        Console.WriteLine("new Xmin in Arc 10 : " + x1 + " ; " + y1 );
+                    }
+
+                }
 
 
 				if (line1 == "20")
@@ -886,10 +898,14 @@ namespace DXFImporter
 					if ( (x1 + radius) > XMax)
 						XMax = x1 + radius;
 
-					if ( (x1 - radius) < XMin)
+					if ( (x1 - radius) < XMin) 
+					{ 
 						XMin = x1 - radius;
+                        //DEBUG
+                        Console.WriteLine("new Xmin in Arc 40: " + (x1 - radius) + " ; " + y1);
+                    }
 
-					if (y1 + radius > YMax)
+                    if (y1 + radius > YMax)
 						YMax = y1 + radius;
 
 					if ( (y1 - radius) < YMin)
