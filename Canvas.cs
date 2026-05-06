@@ -26,8 +26,11 @@ namespace DXFImporter
 	public class Canvas : System.Windows.Forms.Form
 	{
 		public const float LineWidthConstant = 0.25f;
+		public const float Xoffset = 0.3f;
+        public const float Yoffset = -0.8f;
 
-		private bool multipleSelect = false;
+
+        private bool multipleSelect = false;
 		private bool clicked = false;
 
 		public double XMax { get; private set; } = double.MinValue;
@@ -83,10 +86,6 @@ namespace DXFImporter
 			InitializeComponent();
 
 			
-
-			
-
-
 			
 			drawingList = new ArrayList ();
 			objectIdentifier = new ArrayList ();
@@ -201,7 +200,7 @@ namespace DXFImporter
 
 		public void setup(PointF originOffset)
 		{
-			Shape.OriginOffset = new PointF(originOffset.X + LineWidthConstant - 0.35f, originOffset.Y - LineWidthConstant);
+			Shape.OriginOffset = new PointF(originOffset.X + Xoffset , originOffset.Y + Yoffset );
 			Shape.PartOffset = new PointF((float)XMin, (float)YMax);
 			Shape.Dimension = new RectangleF((float)XMin, (float)YMax, (float)(XMax - XMin), (float)(YMax - YMin));
 		}
