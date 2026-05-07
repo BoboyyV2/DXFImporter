@@ -600,6 +600,7 @@ namespace DXFImporter
 		}
 
 
+		//might be bugged
 		private void LineModule (StreamReader reader)		//Interpretes line objects in the DXF file
 		{
 			string line1, line2;

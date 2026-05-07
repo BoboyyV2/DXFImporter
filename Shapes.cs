@@ -207,6 +207,7 @@ namespace DXFImporter
 				highlighted = false;
 			}
 
+			//might be bugged
 			DrawOffsetedLine(ref g, ref pen, startPoint.X, startPoint.Y, endPoint.X, endPoint.Y	);
 			//g.DrawLine(pen, getOffsetedPosition(startPoint), getOffsetedPosition(endPoint) );
 		}
