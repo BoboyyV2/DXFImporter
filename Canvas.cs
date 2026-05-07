@@ -684,6 +684,9 @@ namespace DXFImporter
 			int ix = drawingList.Add(new Line (new PointF((float)x1, (float) -y1), new PointF((float)x2, (float)-y2) , Color.White, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (2, ix));
 
+			//DEBUG
+			Console.WriteLine ("found a line from " + x1 + " ; " + -y1 +" to " + x2 +" ; " + -y2 + ".");
+
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
 			
@@ -765,8 +768,9 @@ namespace DXFImporter
 			if (openOrClosed == 1)
 				thePolyLine.AppendLine (new Line ( (PointF)pointList[numberOfVertices-1], (PointF)pointList[0],Color.White, 1));
 
+            //DEBUG
+            Console.WriteLine("found a polyline.");
 
-			
             //TMPFIX
             RecalculateScale();
 
@@ -850,10 +854,13 @@ namespace DXFImporter
             int ix = drawingList.Add(new circle (new PointF ((float)x1, (float)-y1), radius, Color.White, Color.Red, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (4, ix));
 
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
-			
-		}
+            //DEBUG
+            Console.WriteLine("found a circle in " + x1 + " ; " + -y1 + ".");
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        }
 
 
 		private void ArcModule (StreamReader reader)		//Interpretes arc objects in the DXF file
@@ -983,10 +990,13 @@ namespace DXFImporter
             int ix = drawingList.Add(new arc (new PointF ((float)x1, (float)-y1), radius, angle1, angle2, Color.White, Color.Red, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (6, ix));
 
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
-			//////////////////////////////////////////////////////////////////////////////////////////////////////
+            //DEBUG
+            Console.WriteLine("found a arc whose center is in " + x1 + " ; " + -y1 + ".");
 
-		}
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        }
 
 
 		#endregion
