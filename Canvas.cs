@@ -13,6 +13,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using static System.Windows.Forms.AxHost;
@@ -25,9 +26,9 @@ namespace DXFImporter
 	/// </summary>
 	public class Canvas : System.Windows.Forms.Form
 	{
-		public const float LineWidthConstant = 0.30f;
-		public const float Xoffset = 0.3f;
-		public const float Yoffset = -0.6f;
+		public const float LineWidthConstant = 0.20f;
+		public const float Xoffset = 0.1f;
+		public const float Yoffset = 0.1f;
 
 
         private bool multipleSelect = false;
@@ -680,7 +681,7 @@ namespace DXFImporter
 			
 
 
-			int ix = drawingList.Add(new Line (new Point((int)x1, (int) -y1), new Point((int)x2, (int)-y2) , Color.White, LineWidthConstant));
+			int ix = drawingList.Add(new Line (new PointF((float)x1, (float) -y1), new PointF((float)x2, (float)-y2) , Color.White, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (2, ix));
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -744,7 +745,7 @@ namespace DXFImporter
 					if (y1 < YMin)
 						YMin = y1;
 
-					pointList.Add(new Point((int)x1, (int)-y1));
+					pointList.Add(new PointF((float)x1, (float)-y1));
 					counter++;
 				}
 
@@ -758,11 +759,11 @@ namespace DXFImporter
 
 			for (int i = 1; i<numberOfVertices; i++)
 			{
-				thePolyLine.AppendLine (new Line ( (Point)pointList[i-1], (Point)pointList[i],Color.White, 1));
+				thePolyLine.AppendLine (new Line ( (PointF)pointList[i-1], (PointF)pointList[i],Color.White, 1));
 			}
 
 			if (openOrClosed == 1)
-				thePolyLine.AppendLine (new Line ( (Point)pointList[numberOfVertices-1], (Point)pointList[0],Color.White, 1));
+				thePolyLine.AppendLine (new Line ( (PointF)pointList[numberOfVertices-1], (PointF)pointList[0],Color.White, 1));
 
 
 			
@@ -794,21 +795,25 @@ namespace DXFImporter
 				if (line1 == "10")
 				{
 					x1 = Convert.ToDouble(line2);
-					
+					//Double.TryParse(line2, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture, out x1);
 				}
 
 
 				if (line1 == "20")
 				{
 					y1 = Convert.ToDouble(line2);
-					
-				}
+                    //Double.TryParse(line2, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture, out y1);
+
+                }
 
 
-				if (line1 == "40")
+                if (line1 == "40")
 				{
 					radius = Convert.ToDouble(line2);
-					PointF center = new PointF((float)x1, (float)y1);
+                    //Double.TryParse(line2, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture, out radius);
+
+
+                    PointF center = new PointF((float)x1, (float)y1);
 
 					if ((x1 + radius) > XMax)
 						
@@ -842,7 +847,7 @@ namespace DXFImporter
             RecalculateScale();
 
 
-            int ix = drawingList.Add(new circle (new Point ((int)x1, (int)-y1), radius, Color.White, Color.Red, LineWidthConstant));
+            int ix = drawingList.Add(new circle (new PointF ((float)x1, (float)-y1), radius, Color.White, Color.Red, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (4, ix));
 
 			//////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -975,7 +980,7 @@ namespace DXFImporter
             RecalculateScale();
 
 
-            int ix = drawingList.Add(new arc (new Point ((int)x1, (int)-y1), radius, angle1, angle2, Color.White, Color.Red, LineWidthConstant));
+            int ix = drawingList.Add(new arc (new PointF ((float)x1, (float)-y1), radius, angle1, angle2, Color.White, Color.Red, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (6, ix));
 
 			//////////////////////////////////////////////////////////////////////////////////////////////////////

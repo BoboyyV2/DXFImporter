@@ -1095,7 +1095,7 @@ namespace DXFImporter
 		private double startAngle;
 		private double sweepAngle;
 
-		public arc (Point center, double r, double startangle, double sweepangle,Color color1, Color color2, float w)
+		public arc (PointF center, double r, double startangle, double sweepangle,Color color1, Color color2, float w)
 		{
 			centerPoint = center;
 			radius = r;
