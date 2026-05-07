@@ -31,7 +31,7 @@ namespace DXFImporter
 		public static PointF PartOffset = new PointF();
 		public static RectangleF Dimension = new RectangleF();
 
-		public static PointF getOffsetedPosition(Point point)
+		public static PointF getOffsetedPosition(PointF point)
 		{
 			float x = point.X - (float)(PartOffset.X - OriginOffset.X);
 			float y = point.Y + (float)(PartOffset.Y + OriginOffset.Y);
@@ -78,13 +78,13 @@ namespace DXFImporter
                             getOffsetedPositionX(Xend),   getOffsetedPositionY(Yend) );
         }
 
-        public void DrawOffsetedEllipse(ref Graphics g, ref Pen pen, Point centerPoint, float radius)
+        public void DrawOffsetedEllipse(ref Graphics g, ref Pen pen, PointF centerPoint, float radius)
         {
             PointF pos = getOffsetedPosition(centerPoint);//get the value corresponding to our workzone
             g.DrawEllipse(pen, pos.X - radius, pos.Y - radius, (radius * 2) - pen.Width, (radius * 2) - pen.Width);
         }
 
-        public void DrawOffsetedArc(ref Graphics g, ref Pen pen, Point centerPoint, float radius, float startAngle, float tempAngle)
+        public void DrawOffsetedArc(ref Graphics g, ref Pen pen, PointF centerPoint, float radius, float startAngle, float tempAngle)
         {
             PointF pos = getOffsetedPosition(centerPoint);//get the value corresponding to our workzone
 
@@ -120,7 +120,7 @@ namespace DXFImporter
 		}
 
 		public abstract void Draw(Pen pen, Graphics g);
-		public abstract bool Highlight(Pen pen, Graphics g, Point point);
+		public abstract bool Highlight(Pen pen, Graphics g, PointF point);
 		
 	}
 	#endregion
@@ -128,14 +128,14 @@ namespace DXFImporter
 	#region Line class
 	public class Line : DXFImporter.Shape
 	{
-		protected Point startPoint;
-		protected Point endPoint;
+		protected PointF startPoint;
+		protected PointF endPoint;
 
-		public Line (Point start, Point end, Color color, float w)
+		public Line (PointF start, PointF end, Color color, float w)
 		{
-			startPoint = new Point(start.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
+			startPoint = new PointF(start.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
 								   start.Y + (int)Math.Round(OriginOffset.Y - PartOffset.Y) );
-			endPoint = new Point(end.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
+			endPoint = new PointF(end.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
                                    end.Y + (int)Math.Round(OriginOffset.Y - PartOffset.Y));
             contourColor = color;
 			lineWidth = w;
@@ -213,7 +213,7 @@ namespace DXFImporter
 
 		
 
-		public virtual Point GetStartPoint
+		public virtual PointF GetStartPoint
 		{
 			get
 			{
@@ -222,7 +222,7 @@ namespace DXFImporter
 
 		}
 
-		public virtual Point GetEndPoint
+		public virtual PointF GetEndPoint
 		{
 			get
 			{
@@ -230,7 +230,7 @@ namespace DXFImporter
 			}
 		}
 
-		public override bool Highlight(Pen pen, Graphics g, Point point)
+		public override bool Highlight(Pen pen, Graphics g, PointF point)
 		{
 			GraphicsPath areaPath;
 			Pen areaPen;
@@ -265,7 +265,7 @@ namespace DXFImporter
 		}
 
 
-		public bool Highlight(Pen pen, Graphics g, Point point, double scale)
+		public bool Highlight(Pen pen, Graphics g, PointF point, double scale)
 		{
 			GraphicsPath areaPath;
 			Pen areaPen;
@@ -315,7 +315,7 @@ namespace DXFImporter
 	#region Rectangle class
 	public class rectangle : DXFImporter.Line
 	{
-		public rectangle (Point start, Point end, Color color, Color fill, float w, int angle)
+		public rectangle (PointF start, PointF end, Color color, Color fill, float w, int angle)
 		{
 			startPoint = start;
 			endPoint = end;
@@ -349,14 +349,14 @@ namespace DXFImporter
 				highlighted = false;
 			}
 
-			Point P1 = GetStartPoint;
-			Point P2 = GetEndPoint;
+			PointF P1 = GetStartPoint;
+			PointF P2 = GetEndPoint;
 
-			Point P3 = new Point (P2.X, P1.Y);
-			Point P4 = new Point (P1.X, P2.Y);
+			PointF P3 = new PointF (P2.X, P1.Y);
+			PointF P4 = new PointF (P1.X, P2.Y);
 
 
-			Point center = new Point ( P1.X + (P3.X - P1.X)/2, P1.Y + (P4.Y - P1.Y)/2);
+			PointF center = new PointF ( P1.X + (P3.X - P1.X)/2, P1.Y + (P4.Y - P1.Y)/2);
 
 			int angle = AccessRotation;
 
@@ -378,11 +378,11 @@ namespace DXFImporter
 
 		}
 
-		private Point CalculateRotatedNewPoint(Point P, Point center, int angle)
+		private PointF CalculateRotatedNewPoint(PointF P, PointF center, int angle)
 		{
 			double angleRad = angle * 1 / 57.2957;
 	
-			Point tempPoint = new Point (P.X - center.X, P.Y - center.Y);
+			PointF tempPoint = new PointF (P.X - center.X, P.Y - center.Y);
 
 			double radius = Math.Sqrt ( (tempPoint.X * tempPoint.X) + (tempPoint.Y * tempPoint.Y) );
 
@@ -525,29 +525,29 @@ namespace DXFImporter
 		
 		*/
 
-		public override bool Highlight(Pen pen, Graphics g, Point point)
+		public override bool Highlight(Pen pen, Graphics g, PointF point)
 		{
-			Point P1 = GetStartPoint;
-			Point P2 = GetEndPoint;
+			PointF P1 = GetStartPoint;
+			PointF P2 = GetEndPoint;
 
-			Point P3 = new Point (P2.X, P1.Y);
-			Point P4 = new Point (P1.X, P2.Y);
+			PointF P3 = new PointF (P2.X, P1.Y);
+			PointF P4 = new PointF (P1.X, P2.Y);
 
 			if (AccessRotation != 0)
 			{
-				Point bottom = new Point (0, 0);
-				Point top = new Point (0, 0);
-				Point left = new Point (0, 0);
-				Point right = new Point (0, 0);
+				PointF bottom = new PointF (0, 0);
+				PointF top = new PointF (0, 0);
+				PointF left = new PointF (0, 0);
+				PointF right = new PointF (0, 0);
 
-				Point center = new Point ( P1.X + (P3.X - P1.X)/2, P1.Y + (P4.Y - P1.Y)/2);
+				PointF center = new PointF ( P1.X + (P3.X - P1.X)/2, P1.Y + (P4.Y - P1.Y)/2);
 
 				P1 = CalculateRotatedNewPoint(P1, center, AccessRotation);
 				P2 = CalculateRotatedNewPoint(P2, center, AccessRotation);
 				P3 = CalculateRotatedNewPoint(P3, center, AccessRotation);
 				P4 = CalculateRotatedNewPoint(P4, center, AccessRotation);
 
-				int maxX = Math.Max(P1.X, P2.X);
+				float maxX = Math.Max(P1.X, P2.X);
 				maxX = Math.Max(maxX, P3.X);
 				maxX = Math.Max(maxX, P4.X);
 
@@ -560,7 +560,7 @@ namespace DXFImporter
 				if (maxX == P4.X)
 					right = P4;
 
-				int minX = Math.Min(P1.X, P2.X);
+				float minX = Math.Min(P1.X, P2.X);
 				minX = Math.Min(minX, P3.X);
 				minX = Math.Min(minX, P4.X);
 
@@ -575,7 +575,7 @@ namespace DXFImporter
 					left = P4;
 
 				
-				int maxY = Math.Max(P1.Y, P2.Y);
+				float maxY = Math.Max(P1.Y, P2.Y);
 				maxY = Math.Max(maxY, P3.Y);
 				maxY = Math.Max(maxY, P4.Y);
 
@@ -590,7 +590,7 @@ namespace DXFImporter
 					bottom = P4;
 
 				            
-				int minY = Math.Min(P1.Y, P2.Y);
+				float minY = Math.Min(P1.Y, P2.Y);
 				minY = Math.Min(minY, P3.Y);
 				minY = Math.Min(minY, P4.Y);
 
@@ -622,19 +622,19 @@ namespace DXFImporter
 			}
 			else
 			{
-				int maxX = Math.Max(P1.X, P2.X);
+				float maxX = Math.Max(P1.X, P2.X);
 				maxX = Math.Max(maxX, P3.X);
 				maxX = Math.Max(maxX, P4.X);
 
-				int minX = Math.Min(P1.X, P2.X);
+                float minX = Math.Min(P1.X, P2.X);
 				minX = Math.Min(minX, P3.X);
 				minX = Math.Min(minX, P4.X);
 
-				int maxY = Math.Max(P1.Y, P2.Y);
+                float maxY = Math.Max(P1.Y, P2.Y);
 				maxY = Math.Max(maxY, P3.Y);
 				maxY = Math.Max(maxY, P4.Y);
-            
-				int minY = Math.Min(P1.Y, P2.Y);
+
+                float minY = Math.Min(P1.Y, P2.Y);
 				minY = Math.Min(minY, P3.Y);
 				minY = Math.Min(minY, P4.Y);
 
@@ -653,7 +653,7 @@ namespace DXFImporter
 			return false;
 		}
 
-		private double checkPosition(Point P1, Point P2, Point current)
+		private double checkPosition(PointF P1, PointF P2, PointF current)
 		{
 			double m = (double)(P2.Y - P1.Y)/(P2.X - P1.X);
 			return ((current.Y - P1.Y) - (m * (current.X - P1.X)));			
@@ -665,10 +665,10 @@ namespace DXFImporter
 	#region Circle Class
 	public class circle : DXFImporter.Shape
 	{
-		private Point centerPoint;
+		private PointF centerPoint;
 		private double radius;
 
-		public circle (Point center, double r, Color color1, Color color2, float w)
+		public circle (PointF center, double r, Color color1, Color color2, float w)
 		{
 			centerPoint = center;
 			radius = r;
@@ -729,7 +729,7 @@ namespace DXFImporter
 		}
 
 
-		public Point AccessCenterPoint
+		public PointF AccessCenterPoint
 		{
 			get
 			{
@@ -812,15 +812,15 @@ namespace DXFImporter
 		
 		*/
 
-		public override bool Highlight(Pen pen, Graphics g, Point point)
+		public override bool Highlight(Pen pen, Graphics g, PointF point)
 		{
-			Point center = AccessCenterPoint;
-			int rad = (int) AccessRadius;
+			PointF center = AccessCenterPoint;
+			float rad = (float)AccessRadius;
 
-			int check1y = center.Y - rad;
-			int check2y = center.Y + rad;
-			int check3x = center.X + rad;
-			int check4x = center.X - rad;
+            float check1y = center.Y - rad;
+            float check2y = center.Y + rad;
+            float check3x = center.X + rad;
+            float check4x = center.X - rad;
 
 			double result = (point.X - center.X)*(point.X - center.X) + (point.Y - center.Y)*(point.Y - center.Y) - radius*radius;
 
@@ -839,15 +839,15 @@ namespace DXFImporter
 			return false;
 		}
 
-		public bool Highlight(Pen pen, Graphics g, Point point, double scale)
+		public bool Highlight(Pen pen, Graphics g, PointF point, double scale)
 		{
-			Point center = AccessCenterPoint;
+			PointF center = AccessCenterPoint;
 			int rad = (int) AccessRadius;
 
-			int check1y = center.Y - rad;
-			int check2y = center.Y + rad;
-			int check3x = center.X + rad;
-			int check4x = center.X - rad;
+			float check1y = center.Y - rad;
+            float check2y = center.Y + rad;
+            float check3x = center.X + rad;
+            float check4x = center.X - rad;
 
 			double result = (point.X - center.X*(float)scale)*(point.X - center.X*(float)scale) + (point.Y - center.Y*(float)scale)*(point.Y - center.Y*(float)scale) - radius*radius*(float)scale*(float)scale;
 
@@ -940,7 +940,7 @@ namespace DXFImporter
 
 		}
 
-		public override bool Highlight(Pen pen, Graphics g, Point point)
+		public override bool Highlight(Pen pen, Graphics g, PointF point)
 		{
 			return false;
 		}
@@ -1038,7 +1038,7 @@ namespace DXFImporter
 
 		}
 
-		public override bool Highlight(Pen pen, Graphics g, Point point)
+		public override bool Highlight(Pen pen, Graphics g, PointF point)
 		{
 			foreach (Line obj in listOfLines)
 			{
@@ -1057,7 +1057,7 @@ namespace DXFImporter
 			return false;
 		}
 
-		public bool Highlight(Pen pen, Graphics g, Point point, double scale)
+		public bool Highlight(Pen pen, Graphics g, PointF point, double scale)
 		{
 			foreach (Line obj in listOfLines)
 			{
@@ -1089,7 +1089,7 @@ namespace DXFImporter
 
 	public class arc : DXFImporter.Shape
 	{
-		private Point centerPoint;
+		private PointF centerPoint;
 		private double radius;
 
 		private double startAngle;
@@ -1175,7 +1175,7 @@ namespace DXFImporter
 		}
 
 
-		public Point AccessCenterPoint
+		public PointF AccessCenterPoint
 		{
 			get
 			{
@@ -1235,15 +1235,15 @@ namespace DXFImporter
 			DrawOffsetedArc(ref g, ref pen, centerPoint, (float)radius, (float)startAngle, tempAngle);
 		}
 		
-		public override bool Highlight(Pen pen, Graphics g, Point point)
+		public override bool Highlight(Pen pen, Graphics g, PointF point)
 		{
-			Point center = AccessCenterPoint;
-			int rad = (int) AccessRadius;
+			PointF center = AccessCenterPoint;
+            float rad = (float) AccessRadius;
 
-			int check1y = center.Y - rad;
-			int check2y = center.Y + rad;
-			int check3x = center.X + rad;
-			int check4x = center.X - rad;
+            float check1y = center.Y - rad;
+            float check2y = center.Y + rad;
+            float check3x = center.X + rad;
+            float check4x = center.X - rad;
 
 			double result = (point.X - center.X)*(point.X - center.X) + (point.Y - center.Y)*(point.Y - center.Y) - radius*radius;
 
@@ -1260,15 +1260,15 @@ namespace DXFImporter
 			return false;
 		}
 
-		public bool Highlight(Pen pen, Graphics g, Point point, double scale)
+		public bool Highlight(Pen pen, Graphics g, PointF point, double scale)
 		{
-			Point center = AccessCenterPoint;
-			int rad = (int) AccessRadius;
+			PointF center = AccessCenterPoint;
+			float rad = (float) AccessRadius;
 
-			int check1y = center.Y - rad;
-			int check2y = center.Y + rad;
-			int check3x = center.X + rad;
-			int check4x = center.X - rad;
+            float check1y = center.Y - rad;
+            float check2y = center.Y + rad;
+            float check3x = center.X + rad;
+            float check4x = center.X - rad;
 
 			double result = (point.X - center.X*(float)scale)*(point.X - center.X*(float)scale) + (point.Y - center.Y*(float)scale)*(point.Y - center.Y*(float)scale) - radius*radius*(float)scale*(float)scale;
 

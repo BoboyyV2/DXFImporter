@@ -25,9 +25,9 @@ namespace DXFImporter
 	/// </summary>
 	public class Canvas : System.Windows.Forms.Form
 	{
-		public const float LineWidthConstant = 0.25f;
+		public const float LineWidthConstant = 0.30f;
 		public const float Xoffset = 0.3f;
-        public const float Yoffset = -0.8f;
+		public const float Yoffset = -0.6f;
 
 
         private bool multipleSelect = false;
@@ -42,7 +42,7 @@ namespace DXFImporter
 		private double scaleY = 1;
 		private double mainScale = 1;
 
-		private Point aPoint;
+		private PointF aPoint;
 		private bool sizeChanged = false;
 		
 		private Point startPoint;
@@ -238,10 +238,10 @@ namespace DXFImporter
 						lePen.Width = temp.AccessLineWidth;
 
 						
-						highlightedRegion.Location = temp.GetStartPoint;
+						highlightedRegion.Location = new Point( (int)(temp.GetStartPoint.X), (int)(temp.GetStartPoint.Y) );
 
-						highlightedRegion.Width = temp.GetStartPoint.X - temp.GetEndPoint.X;
-						highlightedRegion.Height = temp.GetStartPoint.Y - temp.GetEndPoint.Y;
+						highlightedRegion.Width = (int)Math.Round(temp.GetStartPoint.X - temp.GetEndPoint.X);
+						highlightedRegion.Height = (int)Math.Round(temp.GetStartPoint.Y - temp.GetEndPoint.Y);
 
 						if (mainScale == 0)
 							mainScale = 1;
