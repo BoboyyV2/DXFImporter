@@ -211,21 +211,6 @@ namespace DXFImporter
 		{
 			Pen lePen = new Pen(Color.White, 1);
 
-			//used for debugging using the base ui of this lib
-			//g.TranslateTransform(-800, 650);//change the value to fit whatever
-			/*
-			float width = (float)(XMax - XMin);
-			float height = (float)(YMax - YMin);
-			PointF offset = new PointF((float)XMin, (float)YMax);
-
-			//DEBUG
-			Console.WriteLine("XMin = " + XMin);
-
-            g.TranslateTransform( -offset.X, offset.Y );
-			*/
-
-
-            
 
             foreach (DrawingObject obj in objectIdentifier)						//iterates through the objects
 			{
@@ -685,8 +670,6 @@ namespace DXFImporter
 			int ix = drawingList.Add(new Line (new PointF((float)x1, (float) -y1), new PointF((float)x2, (float)-y2) , Color.White, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (2, ix));
 
-			//DEBUG
-			Console.WriteLine ("found a line from " + x1 + " ; " + -y1 +" to " + x2 +" ; " + -y2 + ".");
 
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
 			///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -769,8 +752,6 @@ namespace DXFImporter
 			if (openOrClosed == 1)
 				thePolyLine.AppendLine (new Line ( (PointF)pointList[numberOfVertices-1], (PointF)pointList[0],Color.White, 1));
 
-            //DEBUG
-            Console.WriteLine("found a polyline.");
 
             //TMPFIX
             RecalculateScale();
@@ -800,14 +781,12 @@ namespace DXFImporter
 				if (line1 == "10")
 				{
 					x1 = Convert.ToDouble(line2);
-					//Double.TryParse(line2, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture, out x1);
 				}
 
 
 				if (line1 == "20")
 				{
 					y1 = Convert.ToDouble(line2);
-                    //Double.TryParse(line2, System.Globalization.NumberStyles.Float, CultureInfo.InvariantCulture, out y1);
 
                 }
 
@@ -855,8 +834,6 @@ namespace DXFImporter
             int ix = drawingList.Add(new circle (new PointF ((float)x1, (float)-y1), radius, Color.White, Color.Red, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (4, ix));
 
-            //DEBUG
-            Console.WriteLine("found a circle in " + x1 + " ; " + -y1 + ".");
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -886,17 +863,6 @@ namespace DXFImporter
 				if (line1 == "10")
 				{
 					x1 = Convert.ToDouble(line2);
-					//TODO : trigo pour avoir les bonne
-					/*
-					if (x1 > XMax)
-						XMax = x1;
-
-					if (x1 < XMin) { 
-						XMin = x1;
-                        //DEBUG
-                        Console.WriteLine("new Xmin in Arc 10 : " + x1 + " ; " + y1 );
-                    }
-					*/
 
                 }
 
@@ -904,36 +870,12 @@ namespace DXFImporter
 				if (line1 == "20")
 				{
 					y1 = Convert.ToDouble(line2);
-					/*
-					if (y1 > YMax)
-						YMax = y1;
-					if (y1 < YMin)
-						YMin = y1;
-					*/
 				}
 
 
 				if (line1 == "40")
 				{
 					radius = Convert.ToDouble(line2);
-
-					/*
-					if ( (x1 + radius) > XMax)
-						XMax = x1 + radius;
-
-					if ( (x1 - radius) < XMin) 
-					{ 
-						XMin = x1 - radius;
-                        //DEBUG
-                        Console.WriteLine("new Xmin in Arc 40: " + (x1 - radius) + " ; " + y1);
-                    }
-
-                    if (y1 + radius > YMax)
-						YMax = y1 + radius;
-
-					if ( (y1 - radius) < YMin)
-						YMin = y1 - radius;
-					*/
 				}
 				
 
@@ -990,9 +932,6 @@ namespace DXFImporter
 
             int ix = drawingList.Add(new arc (new PointF ((float)x1, (float)-y1), radius, angle1, angle2, Color.White, Color.Red, LineWidthConstant));
 			objectIdentifier.Add (new DrawingObject (6, ix));
-
-            //DEBUG
-            Console.WriteLine("found a arc whose center is in " + x1 + " ; " + -y1 + ".");
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////////////
