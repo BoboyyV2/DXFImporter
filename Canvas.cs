@@ -512,7 +512,19 @@ namespace DXFImporter
 			{
 				MessageBox.Show(e.FileName.ToString() + " cannot be found");
 			}
-			catch
+            catch (DirectoryNotFoundException e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            catch (System.Security.SecurityException e)
+            {
+                MessageBox.Show("Sécurity exeption " + e.Demanded.ToString());
+            }
+            catch
 			{
 				MessageBox.Show("An error occured while opening the DXF file");
 				return;
