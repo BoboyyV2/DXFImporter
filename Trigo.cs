@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace DXFImporter
 {
@@ -16,7 +13,7 @@ namespace DXFImporter
          */
         static float ClosestTo(float lhs, float rhs, float target)
         {
-            float deltaL = Math.Min(Math.Abs(lhs - target),Math.Abs(lhs - (360 + target) ) );
+            float deltaL = Math.Min(Math.Abs(lhs - target), Math.Abs(lhs - (360 + target)));
             float deltaR = Math.Min(Math.Abs(rhs - target), Math.Abs(rhs - (360 + target)));
             if (deltaL < deltaR)
             {
@@ -26,7 +23,7 @@ namespace DXFImporter
 
         }
 
-        
+
 
 
         /**
@@ -42,7 +39,7 @@ namespace DXFImporter
             {
                 return targetAngle;
             }
-            float endAngle =  ( ( (startAngle + sweepAngle) % 360) + 360) % 360;
+            float endAngle = (((startAngle + sweepAngle) % 360) + 360) % 360;
             return ClosestTo(startAngle, endAngle, targetAngle);
         }
 
@@ -58,7 +55,7 @@ namespace DXFImporter
         {
             if (sweepAngle >= 360) //tour complet ou plus
             {
-                return true; 
+                return true;
             }
             //normalise l'angle
             targetAngle = (targetAngle % 360 + 360) % 360;//positive
@@ -98,11 +95,11 @@ namespace DXFImporter
         * <param name="radius">the radius of the circle</param>
         * <param name="angle">the angle in degres starting from 0pie and going clockwise</param>
         */
-        public static PointF GetArcPoint(PointF center,  float radius, float angle)
+        public static PointF GetArcPoint(PointF center, float radius, float angle)
         {
             //convert to the same system as radiant
             angle = -angle;
-            if(angle < 0)
+            if (angle < 0)
             {
                 angle += 360;
             }
