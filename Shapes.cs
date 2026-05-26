@@ -56,19 +56,26 @@ namespace DXFImporter
             return (y + (float)(PartOffset.Y + OriginOffset.Y));
         }
 
-        public void DrawOffsetedRectangle(ref Graphics g, ref Pen pen, float Xstart, float Ystart, float Xend, float Yend)
+        /**
+         * <summary>Draw a rectangle at the correct offseted position</summary>
+         * <param name="tl">The top left corner</param>
+         * <param name="tr">The top right corner</param>
+         * <param name="bl">The bottom left corner</param>
+         * <param name="br">The bottom right corner</param>
+         */
+        public void DrawOffsetedRectangle(ref Graphics g, ref Pen pen, PointF tl, PointF tr, PointF bl, PointF br)
         {
-            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart),
-                                     getOffsetedPositionY(Xend), getOffsetedPositionY(Ystart));
+            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(tl.X), getOffsetedPositionY(tl.Y),
+                                     getOffsetedPositionY(tr.X), getOffsetedPositionY(tr.Y));
 
-            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(Xend), getOffsetedPositionY(Ystart),
-                                     getOffsetedPositionY(Xend), getOffsetedPositionY(Yend));
+            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(tr.X), getOffsetedPositionY(tr.Y),
+                                     getOffsetedPositionY(br.X), getOffsetedPositionY(br.Y));
 
-            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(Xend), getOffsetedPositionY(Yend),
-                                     getOffsetedPositionY(Xstart), getOffsetedPositionY(Yend));
+            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(br.X), getOffsetedPositionY(br.Y),
+                                     getOffsetedPositionY(bl.X), getOffsetedPositionY(bl.Y));
 
-            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(Xstart), getOffsetedPositionY(Yend),
-                                     getOffsetedPositionY(Xstart), getOffsetedPositionY(Ystart));
+            DrawOffsetedLine(ref g, ref pen, getOffsetedPositionY(bl.X), getOffsetedPositionY(bl.Y),
+                                     getOffsetedPositionY(tl.X), getOffsetedPositionY(tl.Y));
         }
 
         public void DrawOffsetedLine(ref Graphics g, ref Pen pen, float Xstart, float Ystart, float Xend, float Yend)
@@ -335,8 +342,11 @@ namespace DXFImporter
                 DrawRotatedRectangle(pen, g);
                 return;
             }
-
-            DrawOffsetedRectangle(ref g, ref pen, GetStartPoint.X, GetStartPoint.Y, GetEndPoint.X, GetEndPoint.Y);
+            PointF tl = GetStartPoint;
+            PointF br = GetEndPoint;
+            PointF tr = new PointF(tl.X, tl.Y);
+            PointF bl = new PointF(br.X, br.Y);
+            DrawOffsetedRectangle(ref g, ref pen, tl, tr, bl, br);
 
             return;
         }
@@ -369,8 +379,7 @@ namespace DXFImporter
                 P2 = CalculateRotatedNewPoint(P2, center, angle);   //Top right
                 P4 = CalculateRotatedNewPoint(P4, center, angle);   //Bottom left
 
-
-                DrawOffsetedRectangle(ref g, ref pen, P1.X, P1.Y, P2.X, P2.Y);
+                DrawOffsetedRectangle(ref g, ref pen, P1, P2, P4, P3);
 
                 return;
 
