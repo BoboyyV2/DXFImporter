@@ -6,6 +6,10 @@ namespace DXFImporter
     public static class Trigo
     {
 
+        public static double DegreesToRadians(double angle)
+        {
+            return angle * Math.PI / 180.0;
+        }
 
         /**
          * <summary>compute the value closest to the taget</summary>
