@@ -11,6 +11,11 @@ namespace DXFImporter
             return angle * Math.PI / 180.0;
         }
 
+        public static double RadiansToDegrees(double angle)
+        {
+            return angle * 180.0 / Math.PI ;
+        }
+
         /**
          * <summary>compute the value closest to the taget</summary>
          * <returns>the closest value to target between the 2 given number</returns>
