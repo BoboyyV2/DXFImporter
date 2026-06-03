@@ -302,152 +302,9 @@ namespace DXFImporter
         }
 
 
-        public bool HiglightObject()            //Highlighting the object with mouse
-        {
-            Graphics daGe = this.CreateGraphics();
-
-
-            foreach (DrawingObject obj in objectIdentifier)         //iterates through the objects and send the relevant info to the checkLineProximity(...) module
-            {
-                if (checkLineProximity(obj.indexNo, obj.shapeType, daGe) == true)
-                {
-                    this.Cursor = Cursors.Cross;
-
-                    CanIDraw = true;
-
-                    if (multipleSelect == false)
-                        return true;
-                }
-
-            }
-            return false;
-
-        }
-
-
-
-        private bool checkLineProximity(int indexno, int identifier, Graphics daGe) //checks whether if the mouse pointer is on an object (i.e. shape)
-        {
-            Graphics g = daGe;
-            Pen lePen = new Pen(Color.Yellow, 1);
-
-            //g = pictureBox1.CreateGraphics();
-
-            g.TranslateTransform(this.pictureBox1.Left + 8, this.pictureBox1.Size.Height + 8);  //transforms point-of-origin to the lower left corner of the canvas.
-
-            g.SmoothingMode = SmoothingMode.HighQuality;
-
-            switch (identifier)                                         //depending on the "identifier" value, the relevant object will be highlighted
-            {
-                case 2:     //Line
-                    {
-                        Line line = (Line)drawingList[indexno];
-
-                        if (mainScale == 0)
-                            mainScale = 1;
-
-                        if (line.Highlight(lePen, g, aPoint, mainScale))
-                        {
-                            this.Cursor = Cursors.Hand;
-                            line.highlighted = true;
-                            return true;
-                        }
-
-                        break;
-
-                    }
-                case 3:     //rectangle
-                    {
-                        rectangle rect = (rectangle)drawingList[indexno];
-
-                        if (rect.Highlight(lePen, g, aPoint))
-                        {
-                            this.Cursor = Cursors.Hand;
-                            rect.highlighted = true;
-                            return true;
-                        }
-
-                        break;
-                    }
-                case 4:     //circle
-                    {
-                        circle tempCircle = (circle)drawingList[indexno];
-
-                        if (mainScale == 0)
-                            mainScale = 1;
-
-                        if (tempCircle.Highlight(lePen, g, aPoint, mainScale))
-                        {
-                            this.Cursor = Cursors.Hand;
-                            tempCircle.highlighted = true;
-                            return true;
-                        }
-
-                        break;
-                    }
-                case 5:     //polyline
-                    {
-                        polyline tempPoly = (polyline)drawingList[indexno];
-
-                        if (mainScale == 0)
-                            mainScale = 1;
-
-                        if (tempPoly.Highlight(lePen, g, aPoint, mainScale))
-                        {
-                            this.Cursor = Cursors.Hand;
-                            tempPoly.highlighted = true;
-                            return true;
-                        }
-                        break;
-                    }
-                case 6:     //arc
-                    {
-                        arc tempArc = (arc)drawingList[indexno];
-
-                        if (mainScale == 0)
-                            mainScale = 1;
-
-                        if (tempArc.Highlight(lePen, g, aPoint, mainScale))
-                        {
-                            this.Cursor = Cursors.Hand;
-                            tempArc.highlighted = true;
-                            return true;
-                        }
-                        break;
-                    }
-            }
-
-            return false;
-        }
-
-
-
-
         #endregion
 
         #region Helper Methods
-
-
-        private double CalculateRadius()        //this helper function is used to calculate the radius for the circle-drawing mode.
-        {
-            double circleRadius = Math.Sqrt((endPoint.X - startPoint.X) * (endPoint.X - startPoint.X) + (endPoint.Y - startPoint.Y) * (endPoint.Y - startPoint.Y));
-            return circleRadius;
-        }
-
-
-        public void RecalculateScale()
-        {
-            /*
-			if (XMax > this.pictureBox1.Size.Width)
-				scaleX = (double) (this.pictureBox1.Size.Width) / (double) XMax;
-			
-			if (YMax > this.pictureBox1.Size.Height)
-				scaleY = (double) (this.pictureBox1.Size.Height) / (double) YMax;
-			
-			mainScale = Math.Min(scaleX, scaleY);
-			*/
-            mainScale = 1;
-        }
 
         protected override void DefWndProc(ref Message m)       //DefWndProc is overriden to capture left mouse click on the title bar of the canvas...
         {
@@ -669,12 +526,6 @@ namespace DXFImporter
 
 
 
-            //TMPFIX
-            RecalculateScale();
-
-
-
-
             int ix = drawingList.Add(new Line(new PointF((float)x1, (float)-y1), new PointF((float)x2, (float)-y2), Color.White, LineWidthConstant));
             objectIdentifier.Add(new DrawingObject(2, ix));
 
@@ -762,12 +613,6 @@ namespace DXFImporter
                 thePolyLine.AppendLine(new Line((PointF)pointList[numberOfVertices - 1], (PointF)pointList[0], Color.White, 1));
 
 
-            //TMPFIX
-            RecalculateScale();
-
-            //////////////////////////////////////////////////////////////////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
         }
 
@@ -834,10 +679,6 @@ namespace DXFImporter
             //***************This Part is related with the drawing editor...the data taken from the dxf file******//
             //***************is interpreted hereinafter***********************************************************//
 
-
-
-            //TMPFIX
-            RecalculateScale();
 
 
             int ix = drawingList.Add(new circle(new PointF((float)x1, (float)-y1), radius, Color.White, Color.Red, LineWidthConstant));
@@ -935,9 +776,6 @@ namespace DXFImporter
 
 
 
-            //TMPFIX
-            RecalculateScale();
-
 
             int ix = drawingList.Add(new arc(new PointF((float)x1, (float)-y1), radius, angle1, angle2, Color.White, Color.Red, LineWidthConstant));
             objectIdentifier.Add(new DrawingObject(6, ix));
@@ -954,8 +792,6 @@ namespace DXFImporter
 
         private void OnSizeChanged(object sender, System.EventArgs e)
         {
-
-            RecalculateScale();
 
             Refresh();
 
