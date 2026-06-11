@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Drawing;
 
+
+/*
+ * This software was heavily modified for the purpose of our CAO application
+ * It will not be comercialised and sould only remain in usage inside the company
+ */
 namespace DXFImporter
 {
     public static class Trigo

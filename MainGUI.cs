@@ -7,6 +7,12 @@
  * Please feel free to inform me about any bugs, problems, ideas etc.
 */
 
+/*
+ * This software was heavily modified for the purpose of our CAO application
+ * It will not be comercialised and sould only remain in usage inside the company
+ */
+
+
 using System;
 using System.Collections;
 using System.Drawing;
