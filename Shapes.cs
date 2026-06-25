@@ -31,34 +31,32 @@ namespace DXFImporter
         public int rotation;
         public bool highlighted;
 
-        public static PointF OriginOffset = new PointF();
-        public static PointF PartOffset = new PointF();
-        public static RectangleF Dimension = new RectangleF();
+        protected Canvas Parent;
 
-        public static PointF getOffsetedPosition(PointF point)
+        public PointF getOffsetedPosition(PointF point)
         {
-            float x = point.X - (float)(PartOffset.X - OriginOffset.X);
-            float y = point.Y + (float)(PartOffset.Y + OriginOffset.Y);
+            float x = point.X - (float)(Parent.PartOffset.X - Parent.OriginOffsetForDisplay.X);
+            float y = point.Y + (float)(Parent.PartOffset.Y + Parent.OriginOffsetForDisplay.Y);
 
 
             return new PointF(x, y);
         }
-        public static float getOffsetedPositionX(float x)
+        public float getOffsetedPositionX(float x)
         {
-            return (x - (float)(PartOffset.X - OriginOffset.X));
+            return (x - (float)(Parent.PartOffset.X - Parent.OriginOffsetForDisplay.X));
         }
-        public static float getOffsetedPositionX(int x)
+        public float getOffsetedPositionX(int x)
         {
-            return (x - (float)(PartOffset.X - OriginOffset.X));
+            return (x - (float)(Parent.PartOffset.X - Parent.OriginOffsetForDisplay.X));
         }
 
-        public static float getOffsetedPositionY(float y)
+        public float getOffsetedPositionY(float y)
         {
-            return (y + (float)(PartOffset.Y + OriginOffset.Y));
+            return (y + (float)(Parent.PartOffset.Y + Parent.OriginOffsetForDisplay.Y));
         }
-        public static float getOffsetedPositionY(int y)
+        public float getOffsetedPositionY(int y)
         {
-            return (y + (float)(PartOffset.Y + OriginOffset.Y));
+            return (y + (float)(Parent.PartOffset.Y + Parent.OriginOffsetForDisplay.Y));
         }
 
         /**
@@ -142,12 +140,13 @@ namespace DXFImporter
         protected PointF startPoint;
         protected PointF endPoint;
 
-        public Line(PointF start, PointF end, Color color, float w)
+        public Line(PointF start, PointF end, Color color, float w, Canvas parent)
         {
-            startPoint = new PointF(start.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
-                                   start.Y + (int)Math.Round(OriginOffset.Y - PartOffset.Y));
-            endPoint = new PointF(end.X + (int)Math.Round(OriginOffset.X - PartOffset.X),
-                                   end.Y + (int)Math.Round(OriginOffset.Y - PartOffset.Y));
+            this.Parent = parent;
+            startPoint = new PointF(start.X + (int)Math.Round(Parent.OriginOffsetForDisplay.X - Parent.PartOffset.X),
+                                   start.Y + (int)Math.Round(Parent.OriginOffsetForDisplay.Y - Parent.PartOffset.Y));
+            endPoint = new PointF(end.X + (int)Math.Round(Parent.OriginOffsetForDisplay.X - Parent.PartOffset.X),
+                                   end.Y + (int)Math.Round(Parent.OriginOffsetForDisplay.Y - Parent.PartOffset.Y));
             contourColor = color;
             lineWidth = w;
             shapeIdentifier = 1;
@@ -327,8 +326,9 @@ namespace DXFImporter
     #region Rectangle class
     public class rectangle : DXFImporter.Line
     {
-        public rectangle(PointF start, PointF end, Color color, Color fill, float w, int angle)
+        public rectangle(PointF start, PointF end, Color color, Color fill, float w, int angle, Canvas parent)
         {
+            this.Parent = parent;
             startPoint = start;
             endPoint = end;
             contourColor = color;
@@ -682,8 +682,9 @@ namespace DXFImporter
         private PointF centerPoint;
         private double radius;
 
-        public circle(PointF center, double r, Color color1, Color color2, float w)
+        public circle(PointF center, double r, Color color1, Color color2, float w, Canvas parent)
         {
+            this.Parent = parent;
             centerPoint = center;
             radius = r;
             contourColor = color1;
@@ -969,8 +970,9 @@ namespace DXFImporter
     {
         private ArrayList listOfLines;
 
-        public polyline(Color color, float w)
+        public polyline(Color color, float w, Canvas parent)
         {
+            this.Parent = parent;
             listOfLines = new ArrayList();
 
             contourColor = color;
@@ -1109,8 +1111,9 @@ namespace DXFImporter
         private double startAngle;
         private double sweepAngle;
 
-        public arc(PointF center, double r, double startangle, double sweepangle, Color color1, Color color2, float w)
+        public arc(PointF center, double r, double startangle, double sweepangle, Color color1, Color color2, float w, Canvas parent)
         {
+            this.Parent = parent;
             centerPoint = center;
             radius = r;
             startAngle = startangle;

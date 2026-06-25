@@ -76,8 +76,13 @@ namespace DXFImporter
         private System.ComponentModel.Container components = null;
 
         private PointF offset = new PointF();
-        private RectangleF dimensions = new Rectangle();
 
+        public RectangleF Dimensions = new Rectangle();
+        public PointF PartOffset = new PointF();
+        public PointF OriginOffsetForDisplay = new PointF();
+
+
+        
         public Canvas()
         {
 
@@ -202,9 +207,9 @@ namespace DXFImporter
 
         public void setup(PointF originOffset)
         {
-            Shape.OriginOffset = new PointF(originOffset.X + Xoffset, originOffset.Y + Yoffset);
-            Shape.PartOffset = new PointF((float)XMin, (float)YMax);
-            Shape.Dimension = new RectangleF((float)XMin, (float)YMax, (float)(XMax - XMin), (float)(YMax - YMin));
+            OriginOffsetForDisplay = new PointF(originOffset.X + Xoffset, originOffset.Y + Yoffset);
+            PartOffset = new PointF((float)XMin, (float)YMax);
+            Dimensions = new RectangleF((float)XMin, (float)YMax, (float)(XMax - XMin), (float)(YMax - YMin));
         }
         #region Drawing and Highlighting Methods
 
@@ -531,7 +536,7 @@ namespace DXFImporter
 
 
 
-            int ix = drawingList.Add(new Line(new PointF((float)x1, (float)-y1), new PointF((float)x2, (float)-y2), Color.White, LineWidthConstant));
+            int ix = drawingList.Add(new Line(new PointF((float)x1, (float)-y1), new PointF((float)x2, (float)-y2), Color.White, LineWidthConstant, this));
             objectIdentifier.Add(new DrawingObject(2, ix));
 
 
@@ -553,7 +558,7 @@ namespace DXFImporter
             double y2 = 0;
 
 
-            thePolyLine = new polyline(Color.White, LineWidthConstant);
+            thePolyLine = new polyline(Color.White, LineWidthConstant, this);
 
             int ix = drawingList.Add(thePolyLine);
             objectIdentifier.Add(new DrawingObject(5, ix));
@@ -611,11 +616,11 @@ namespace DXFImporter
 
             for (int i = 1; i < numberOfVertices; i++)
             {
-                thePolyLine.AppendLine(new Line((PointF)pointList[i - 1], (PointF)pointList[i], Color.White, 1));
+                thePolyLine.AppendLine(new Line((PointF)pointList[i - 1], (PointF)pointList[i], Color.White, 1, this));
             }
 
             if (openOrClosed == 1)
-                thePolyLine.AppendLine(new Line((PointF)pointList[numberOfVertices - 1], (PointF)pointList[0], Color.White, 1));
+                thePolyLine.AppendLine(new Line((PointF)pointList[numberOfVertices - 1], (PointF)pointList[0], Color.White, 1, this));
 
 
 
@@ -686,7 +691,7 @@ namespace DXFImporter
 
 
 
-            int ix = drawingList.Add(new circle(new PointF((float)x1, (float)-y1), radius, Color.White, Color.Red, LineWidthConstant));
+            int ix = drawingList.Add(new circle(new PointF((float)x1, (float)-y1), radius, Color.White, Color.Red, LineWidthConstant, this));
             objectIdentifier.Add(new DrawingObject(4, ix));
 
 
@@ -782,7 +787,7 @@ namespace DXFImporter
 
 
 
-            int ix = drawingList.Add(new arc(new PointF((float)x1, (float)-y1), radius, angle1, angle2, Color.White, Color.Red, LineWidthConstant));
+            int ix = drawingList.Add(new arc(new PointF((float)x1, (float)-y1), radius, angle1, angle2, Color.White, Color.Red, LineWidthConstant, this));
             objectIdentifier.Add(new DrawingObject(6, ix));
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////
